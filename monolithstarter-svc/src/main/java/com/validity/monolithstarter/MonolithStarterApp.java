@@ -12,10 +12,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.core.env.Environment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Scanner;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MonolithStarterApp implements InitializingBean {
@@ -54,6 +57,7 @@ public class MonolithStarterApp implements InitializingBean {
         DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
         logApplicationStartup(env);
+        fileMaker();
     }
 
     private static void logApplicationStartup(Environment env) {
@@ -86,5 +90,25 @@ public class MonolithStarterApp implements InitializingBean {
             serverPort,
             contextPath,
             env.getActiveProfiles());
+    }
+
+    private static void fileMaker()
+    {
+        String fileName = "normal.csv";
+        File file = new File(fileName);
+        try{
+            Scanner inputStream = new Scanner(file);
+            inputStream.next(); //skip the first line
+            while (inputStream.hasNext())
+            {
+                //get one line
+                String data = inputStream.next();
+                String[] values = data.split(",");
+                log.info(data);
+            }
+            inputStream.close();
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 }
