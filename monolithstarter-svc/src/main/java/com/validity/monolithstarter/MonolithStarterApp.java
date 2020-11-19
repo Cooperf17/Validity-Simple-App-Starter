@@ -12,13 +12,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.core.env.Environment;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
+import java.util.HashSet;
+import java.io.FileReader;
+import org.apache.commons.codec.language.Metaphone;
+import org.springframework.core.io.ClassPathResource;
+
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MonolithStarterApp implements InitializingBean {
@@ -94,21 +98,48 @@ public class MonolithStarterApp implements InitializingBean {
 
     private static void fileMaker()
     {
-        String fileName = "normal.csv";
-        File file = new File(fileName);
+        ClassPathResource resource = new ClassPathResource("test-files/normal.csv");
+        BufferedReader buffReader = null;
+
+        //cant read file in a jar file, so had to use an input streamer
+
+        //Create variable to store one line as well as a HashSet to store all the lines in the file
+        String oneLine = "";
+        HashSet<String> allLines = new HashSet<>();
+
+        //read in every line from the file
         try{
-            Scanner inputStream = new Scanner(file);
-            inputStream.next(); //skip the first line
-            while (inputStream.hasNext())
+            InputStreamReader reader = new InputStreamReader(resource.getInputStream());
+            buffReader = new BufferedReader(reader);
+            while ((oneLine = buffReader.readLine()) != null)
             {
-                //get one line
-                String data = inputStream.next();
-                String[] values = data.split(",");
-                log.info(data);
+                if(allLines.add(oneLine)) //add does not add duplicates
+                {
+                    System.out.println(oneLine);
+                    log.info(oneLine);
+                }
             }
-            inputStream.close();
         } catch(FileNotFoundException e){
             e.printStackTrace();
+        } catch(IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(buffReader != null) {
+                try {
+                    buffReader.close(); //close the reader after you are done using it
+                } catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static void checkDuplicates(HashSet<String> values)
+    {
+        Metaphone metaphone;
+        for(String s : values)
+        {
+
         }
     }
 }
