@@ -105,7 +105,7 @@ public class MonolithStarterApp implements InitializingBean {
 
         //Create variable to store one line as well as a HashSet to store all the lines in the file
         String oneLine = "";
-        HashSet<String> allLines = new HashSet<>();
+        HashSet<Record> records = new HashSet<>();
 
         //read in every line from the file
         try{
@@ -115,16 +115,17 @@ public class MonolithStarterApp implements InitializingBean {
             {
                 //split the line
                 String[] tokens = oneLine.split(",");
+                Record record = null;
                 if(tokens.length >0)
                 {
                     //Create new records with that line
-                    Record record = new Record(Integer.parseInt(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6], Integer.parseInt(tokens[7]), tokens[8], tokens[9], tokens[10], tokens[11]);
+                    record = new Record(Integer.parseInt(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6], Integer.parseInt(tokens[7]), tokens[8], tokens[9], tokens[10], tokens[11]);
 
                     //perform checks to see if that record is too similar to those in the set
+                    checkDuplicates(records, record);
 
-                    
                 }
-                if(allLines.add(oneLine)) //add does not add duplicates
+                if(records.add(record)) //add does not add duplicates
                 {
                     System.out.println(oneLine);
                     log.info(oneLine);
@@ -145,12 +146,35 @@ public class MonolithStarterApp implements InitializingBean {
         }
     }
 
-    private static void checkDuplicates(HashSet<String> values)
+    /**
+     *
+     * @param values
+     * @param record
+     * @return true if duplicate is found, false if no duplicate
+     */
+    private static boolean checkDuplicates(HashSet<Record> values, Record record)
     {
-        Metaphone metaphone;
-        for(String s : values)
+        //check to see if the record is already in the set
+        if(values.contains(record))
         {
-
+            return true;
         }
+
+        //Check for sound
+        Metaphone metaphone = new Metaphone();
+        for(Record s : values)
+        {
+            //check if first names sound the same & and have same last name
+            if(metaphone.isMetaphoneEqual(s.getFirstName(), record.getFirstName()) && s.getLastName() == record.getLastName())
+            {
+                return true; //Same first name is used with different spelling (but same sound)
+            }
+            //check if last names sound the same but have same first name
+            else if(metaphone.isMetaphoneEqual(s.getLastName(),record.getLastName()) && s.getFirstName() == record.getFirstName())
+                return true;
+        }
+        
+        //passes all duplicate checks
+        return false;
     }
 }
