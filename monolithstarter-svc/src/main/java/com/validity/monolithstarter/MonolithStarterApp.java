@@ -113,6 +113,17 @@ public class MonolithStarterApp implements InitializingBean {
             buffReader = new BufferedReader(reader);
             while ((oneLine = buffReader.readLine()) != null)
             {
+                //split the line
+                String[] tokens = oneLine.split(",");
+                if(tokens.length >0)
+                {
+                    //Create new records with that line
+                    Record record = new Record(Integer.parseInt(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6], Integer.parseInt(tokens[7]), tokens[8], tokens[9], tokens[10], tokens[11]);
+
+                    //perform checks to see if that record is too similar to those in the set
+
+                    
+                }
                 if(allLines.add(oneLine)) //add does not add duplicates
                 {
                     System.out.println(oneLine);
