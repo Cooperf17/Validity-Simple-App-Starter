@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.io.FileReader;
 import org.apache.commons.codec.language.Metaphone;
 import org.springframework.core.io.ClassPathResource;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MonolithStarterApp implements InitializingBean {
@@ -95,7 +96,7 @@ public class MonolithStarterApp implements InitializingBean {
             env.getActiveProfiles());
     }
 
-    private static void fileMaker()
+    public static void fileMaker()
     {
         ClassPathResource resource = new ClassPathResource("normal.csv");
         BufferedReader buffReader = null;
@@ -105,6 +106,7 @@ public class MonolithStarterApp implements InitializingBean {
         //Create variable to store one line as well as a HashSet to store all the lines in the file
         String oneLine = "";
         HashSet<Record> records = new HashSet<>();
+        HashSet<Record> duplicates = new HashSet<>();
 
         //read in every line from the file
         try{
@@ -140,13 +142,18 @@ public class MonolithStarterApp implements InitializingBean {
                         addToSet = true;
                     }
 
+                    //perform checks to see if records are too similar by checking Lev dist
+                    if(!levCheck(records,record))
+                        addToSet = true;
+
                 }
                 if(addToSet == true) //add does not add duplicates
                 {
                     records.add(record);
                     System.out.println(oneLine);
-                  //  log.info(oneLine);
                 }
+                else //add the duplicate to the duplicate HashSet
+                    duplicates.add(record);
             }
             System.out.println(records.size()); //TODO remove this
         } catch(FileNotFoundException e){
@@ -170,7 +177,7 @@ public class MonolithStarterApp implements InitializingBean {
      * @param record
      * @return true if duplicate is found, false if no duplicate
      */
-    private static boolean checkDuplicates(HashSet<Record> values, Record record)
+    public static boolean checkDuplicates(HashSet<Record> values, Record record)
     {
         //check to see if the record is already in the set
         if(values.contains(record))
@@ -221,7 +228,56 @@ public class MonolithStarterApp implements InitializingBean {
             }
         }
 
+        //check Levenshtein distance
+
+
         //passes all duplicate checks
+        return false;
+    }
+
+    /**
+     *
+     * @return returns true if two words are too close
+     */
+    public static boolean levCheck(HashSet<Record> values, Record record)
+    {
+        //if the two values are only distant by two, then they must be duplicates
+        //this value can be changed to be more or less strict on similarity
+        int distanceThreshold = 2;
+
+        LevenshteinDistance lev = new LevenshteinDistance();
+
+        //calculate distance between the records for first name
+        for(Record s : values)
+        {
+            int dist = lev.apply(s.getFirstName(), record.getFirstName());
+            //distance between first names too close
+            if(dist <= distanceThreshold)
+            {
+                return true;
+            }
+
+            dist = lev.apply(s.getLastName(), record.getLastName());
+            //distance between last names too close
+            if(dist <= distanceThreshold)
+            {
+                return true;
+            }
+
+            dist = lev.apply(s.getAddress1(), record.getAddress1());
+            //distance between addresses too close
+            if(dist <= distanceThreshold)
+            {
+                return true;
+            }
+
+            dist = lev.apply(s.getEmail(), record.getEmail());
+            //distance between email too close
+            if(dist <= distanceThreshold)
+            {
+                return true;
+            }
+        }
         return false;
     }
 }
