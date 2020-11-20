@@ -16,6 +16,8 @@ public class Record {
     private String state;
     private String phone;
 
+
+
     //constructor
     public Record(int id, String firstName, String lastName, String company, String email, String address1, String address2, int zip, String city, String state_long, String state, String phone) {
         this.id = id;

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -62,8 +63,7 @@ public class MonolithStarterApp implements InitializingBean {
         Environment env = app.run(args).getEnvironment();
         logApplicationStartup(env);
 
-        RecordStorage recStor = new RecordStorage();
-        fileMaker(recStor);
+        fileMaker(RecordStorage.recStore);
     }
 
     private static void logApplicationStartup(Environment env) {

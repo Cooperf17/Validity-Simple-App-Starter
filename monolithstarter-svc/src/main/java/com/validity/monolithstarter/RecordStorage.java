@@ -1,11 +1,20 @@
 package com.validity.monolithstarter;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import com.google.gson.Gson;
+import org.apache.commons.codec.language.Metaphone;
+import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.core.io.ClassPathResource;
 
 public class RecordStorage {
-    HashSet<Record> records;
-    HashSet<Record> duplicates;
+    private static HashSet<Record> records;
+    private static HashSet<Record> duplicates;
+
+    public static RecordStorage recStore = new RecordStorage();
 
     public RecordStorage(HashSet<Record> records, HashSet<Record> duplicates) {
         this.records = records;

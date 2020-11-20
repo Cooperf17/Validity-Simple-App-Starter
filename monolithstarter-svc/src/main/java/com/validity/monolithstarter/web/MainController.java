@@ -5,6 +5,8 @@
 
 package com.validity.monolithstarter.web;
 
+import com.validity.monolithstarter.MonolithStarterApp;
+import com.validity.monolithstarter.RecordStorage;
 import io.github.jhipster.config.JHipsterConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,10 @@ public class MainController {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private MainService mainService;
+
+
     @GetMapping("/")
     public String main() {
         Collection<String> activeProfiles = Arrays.asList(environment.getActiveProfiles());
@@ -33,5 +39,17 @@ public class MainController {
         else {
             return "main";
         }
+    }
+
+    @GetMapping("/records")
+    public String records()
+    {
+        return mainService.getRecords();
+    }
+
+    @GetMapping("/duplicates")
+    public String duplicates()
+    {
+        return mainService.getDuplicates();
     }
 }
