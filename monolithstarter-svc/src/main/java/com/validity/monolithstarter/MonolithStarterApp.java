@@ -61,7 +61,9 @@ public class MonolithStarterApp implements InitializingBean {
         DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
         logApplicationStartup(env);
-        fileMaker();
+
+        RecordStorage recStor = new RecordStorage();
+        fileMaker(recStor);
     }
 
     private static void logApplicationStartup(Environment env) {
@@ -96,11 +98,10 @@ public class MonolithStarterApp implements InitializingBean {
             env.getActiveProfiles());
     }
 
-    public static void fileMaker()
+    public static void fileMaker(RecordStorage recStor)
     {
         ClassPathResource resource = new ClassPathResource("normal.csv");
         BufferedReader buffReader = null;
-
         //cant read file in a jar file, so had to use an input streamer
 
         //Create variable to store one line as well as a HashSet to store all the lines in the file
@@ -169,6 +170,8 @@ public class MonolithStarterApp implements InitializingBean {
                 }
             }
         }
+        recStor.setRecords(records);
+        recStor.setDuplicates(duplicates);
     }
 
     /**
