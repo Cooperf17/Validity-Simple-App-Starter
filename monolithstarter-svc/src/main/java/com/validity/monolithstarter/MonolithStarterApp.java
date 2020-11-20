@@ -23,7 +23,6 @@ import java.io.FileReader;
 import org.apache.commons.codec.language.Metaphone;
 import org.springframework.core.io.ClassPathResource;
 
-
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MonolithStarterApp implements InitializingBean {
 
@@ -98,7 +97,7 @@ public class MonolithStarterApp implements InitializingBean {
 
     private static void fileMaker()
     {
-        ClassPathResource resource = new ClassPathResource("test-files/normal.csv");
+        ClassPathResource resource = new ClassPathResource("normal.csv");
         BufferedReader buffReader = null;
 
         //cant read file in a jar file, so had to use an input streamer
@@ -111,26 +110,45 @@ public class MonolithStarterApp implements InitializingBean {
         try{
             InputStreamReader reader = new InputStreamReader(resource.getInputStream());
             buffReader = new BufferedReader(reader);
+
+            //skip the first line
+            buffReader.readLine();
+
             while ((oneLine = buffReader.readLine()) != null)
             {
                 //split the line
                 String[] tokens = oneLine.split(",");
                 Record record = null;
+                boolean addToSet = false;
                 if(tokens.length >0)
                 {
                     //Create new records with that line
+                    //exception handling for if there is a blank int
+                    try{
+                        Integer.parseInt(tokens[7]);
+                    }catch(NumberFormatException ex){
+                        tokens[7] = "0";
+                    }
+
                     record = new Record(Integer.parseInt(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6], Integer.parseInt(tokens[7]), tokens[8], tokens[9], tokens[10], tokens[11]);
 
+                    System.out.println(record.getEmail());
+
                     //perform checks to see if that record is too similar to those in the set
-                    checkDuplicates(records, record);
+                    if(!checkDuplicates(records, record))
+                    {
+                        addToSet = true;
+                    }
 
                 }
-                if(records.add(record)) //add does not add duplicates
+                if(addToSet == true) //add does not add duplicates
                 {
+                    records.add(record);
                     System.out.println(oneLine);
-                    log.info(oneLine);
+                  //  log.info(oneLine);
                 }
             }
+            System.out.println(records.size()); //TODO remove this
         } catch(FileNotFoundException e){
             e.printStackTrace();
         } catch(IOException e) {
@@ -165,15 +183,44 @@ public class MonolithStarterApp implements InitializingBean {
         for(Record s : values)
         {
             //check if first names sound the same & and have same last name
-            if(metaphone.isMetaphoneEqual(s.getFirstName(), record.getFirstName()) && s.getLastName() == record.getLastName())
+            if(metaphone.isMetaphoneEqual(s.getFirstName().trim(), record.getFirstName().trim()) && s.getLastName().trim().equals(record.getLastName().trim()))
             {
                 return true; //Same first name is used with different spelling (but same sound)
             }
             //check if last names sound the same but have same first name
-            else if(metaphone.isMetaphoneEqual(s.getLastName(),record.getLastName()) && s.getFirstName() == record.getFirstName())
+            else if(metaphone.isMetaphoneEqual(s.getLastName().trim(),record.getLastName().trim()) && s.getFirstName().trim().equals(record.getFirstName().trim()))
                 return true;
         }
-        
+
+        //TODO: in future make one looping check rather than multiple if statements in many loops
+
+        //check for duplicate email
+        for(Record s : values)
+        {
+            if(s.getEmail().trim().equals(record.getEmail().trim()))
+            {
+              return true;
+            }
+        }
+
+        //check for duplicate address
+        for(Record s : values)
+        {
+            if(s.getAddress1().trim().equals(record.getAddress1().trim()))
+            {
+                return true;
+            }
+        }
+
+        //check for duplicate phone
+        for(Record s : values)
+        {
+            if(s.getPhone().trim().equals(record.getPhone().trim()))
+            {
+                return true;
+            }
+        }
+
         //passes all duplicate checks
         return false;
     }
