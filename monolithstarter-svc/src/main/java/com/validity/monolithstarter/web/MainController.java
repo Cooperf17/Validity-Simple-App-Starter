@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.validity.monolithstarter.service.MainService;
@@ -50,9 +52,12 @@ public class MainController {
     //returns records without duplicates
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/records")
-    public String records()
+    public ResponseEntity records()
     {
-        return mainService.getRecords();
+        //attempt to get around CORS issues
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin","*");
+        return ResponseEntity.ok().headers(headers).body(mainService.getRecords());
     }
 
     //returns duplicates
