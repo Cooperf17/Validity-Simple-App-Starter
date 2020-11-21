@@ -15,11 +15,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.validity.monolithstarter.service.MainService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class MainController {
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
 

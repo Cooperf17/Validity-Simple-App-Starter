@@ -14,7 +14,7 @@ public class RecordStorage {
     private static HashSet<Record> records;
     private static HashSet<Record> duplicates;
 
-    public static RecordStorage recStore = new RecordStorage();
+    public static RecordStorage recStore = new RecordStorage(); //TODO make this non public in future
 
     public RecordStorage(HashSet<Record> records, HashSet<Record> duplicates) {
         this.records = records;
@@ -39,6 +39,11 @@ public class RecordStorage {
         Gson gson = new Gson();
         String duplicateJson = gson.toJson(duplicates);
         return duplicateJson;
+    }
+
+    public RecordStorage getRecStore()
+    {
+        return recStore;
     }
 
     public HashSet<Record> getRecords() {
