@@ -3,6 +3,18 @@ import { Link, withRouter } from 'react-router-dom';
 import {getRecords} from "../actions/homeActions";
 import {getDuplicates} from "../actions/homeActions";
 
+const style  =
+  `
+    table,th,td
+    {
+    border: 1px solid black
+    }
+    table
+    {
+    border-collapse: collapse
+    }
+  `;
+
 class HomePage extends Component {
   constructor(props){
     super(props);
@@ -24,28 +36,35 @@ class HomePage extends Component {
   }
 
   render() {
+
     const{records, duplicates} = this.state;
+    console.log(records);
     console.log(duplicates);
+
     return (
       <div className="App">
-
+        <style>{style}</style>
         <h1>Duplicate Records</h1>
-        <table>
+        <table className={style}>
           <tr style={{fontWeight:"bold"}}>
             <td>Name</td>
             <td>Company</td>
+            <td>Email</td>
             <td>Address</td>
             <td>Zip</td>
             <td>City</td>
+            <td>State</td>
             <td>Phone</td>
           </tr>
           {duplicates.map(duplicate => (
             <tr key={duplicate.id}>
               <td>{duplicate.firstName} {duplicate.lastName}</td>
-              <td>{duplicate.company}, Email: {duplicate.email}</td>
+              <td>{duplicate.company}</td>
+              <td>{duplicate.email}</td>
               <td>{duplicate.address1}, {duplicate.address2}</td>
-              <td>Zip: {duplicate.zip}</td>
-              <td>{duplicate.city}, State: {duplicate.state}</td>
+              <td>{duplicate.zip}</td>
+              <td>{duplicate.city}</td>
+              <td>State: {duplicate.state}</td>
               <td>{duplicate.phone}</td>
             </tr>
           ))}
@@ -58,18 +77,22 @@ class HomePage extends Component {
           <tr style={{fontWeight:"bold"}}>
             <td>Name</td>
             <td>Company</td>
+            <td>Email</td>
             <td>Address</td>
             <td>Zip</td>
             <td>City</td>
+            <td>State</td>
             <td>Phone</td>
           </tr>
           {records.map(record => (
             <tr key={record.id}>
               <td>{record.firstName} {record.lastName}</td>
-              <td>{record.company}, Email: {record.email}</td>
+              <td>{record.company}</td>
+              <td>{record.email}</td>
               <td>{record.address1}, {record.address2}</td>
               <td>{record.zip}</td>
-              <td>{record.city}, State: {record.state}</td>
+              <td>{record.city}</td>
+              <td>{record.state}</td>
               <td>{record.phone}</td>
             </tr>
           ))}
@@ -80,6 +103,5 @@ class HomePage extends Component {
       );
    }
   }
-
 
 export default withRouter(HomePage);
