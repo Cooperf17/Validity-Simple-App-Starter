@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.validity.monolithstarter.service.MainService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.Arrays;
 import java.util.Collection;
+import javax.inject.Inject;
 
 @RestController
 @RequestMapping("/api")
@@ -29,8 +31,9 @@ public class MainController {
     @Autowired
     private Environment environment;
 
-    @Autowired
+    @Inject
     private MainService mainService;
+
 
 
     @GetMapping("/")
@@ -43,13 +46,14 @@ public class MainController {
             return "main";
         }
     }
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/records")
     public String records()
     {
         return mainService.getRecords();
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/duplicates")
     public String duplicates()
     {

@@ -13,45 +13,67 @@ class HomePage extends Component {
   }
 
   componentDidMount(){
+
     getRecords().then(records => {
       this.setState({records});
     });
 
-    getDuplicates()
-      .then(results => results.json())
-      .then(json => {
-        this.setState({
-          duplicates: json
-        });
+    getDuplicates().then(duplicates => {
+      this.setState({duplicates});
       });
   }
 
   render() {
     const{records, duplicates} = this.state;
+    console.log(duplicates);
     return (
       <div className="App">
 
         <h1>Duplicate Records</h1>
-        <ul>
+        <table>
+          <tr style={{fontWeight:"bold"}}>
+            <td>Name</td>
+            <td>Company</td>
+            <td>Address</td>
+            <td>Zip</td>
+            <td>City</td>
+            <td>Phone</td>
+          </tr>
           {duplicates.map(duplicate => (
-            <li key={duplicate.id}>
-              Name: {duplicate.firstName} {duplicate.lastName}
-              Company: {duplicate.company}, Email: {duplicate.email}
-              Address: {duplicate.address1}, {duplicate.address2}, Zip: {duplicate.zip}
-              City: {duplicate.city}, State: {duplicate.state}
-              Phone: {duplicate.phone}
-            </li>
+            <tr key={duplicate.id}>
+              <td>{duplicate.firstName} {duplicate.lastName}</td>
+              <td>{duplicate.company}, Email: {duplicate.email}</td>
+              <td>{duplicate.address1}, {duplicate.address2}</td>
+              <td>Zip: {duplicate.zip}</td>
+              <td>{duplicate.city}, State: {duplicate.state}</td>
+              <td>{duplicate.phone}</td>
+            </tr>
           ))}
-        </ul>
+        </table>
 
         <h1>Record List with Duplicates Removed</h1>
-        <ul>
+        <table style={
+          {}
+        }>
+          <tr style={{fontWeight:"bold"}}>
+            <td>Name</td>
+            <td>Company</td>
+            <td>Address</td>
+            <td>Zip</td>
+            <td>City</td>
+            <td>Phone</td>
+          </tr>
           {records.map(record => (
-              <li key={record.id}>
-                Name: {record.firstName} {record.lastName}
-              </li>
-            ))}
-        </ul>
+            <tr key={record.id}>
+              <td>{record.firstName} {record.lastName}</td>
+              <td>{record.company}, Email: {record.email}</td>
+              <td>{record.address1}, {record.address2}</td>
+              <td>{record.zip}</td>
+              <td>{record.city}, State: {record.state}</td>
+              <td>{record.phone}</td>
+            </tr>
+          ))}
+        </table>
 
 
       </div>

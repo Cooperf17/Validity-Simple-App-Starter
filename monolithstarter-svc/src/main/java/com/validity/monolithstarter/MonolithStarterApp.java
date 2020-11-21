@@ -24,6 +24,10 @@ import java.io.FileReader;
 import org.apache.commons.codec.language.Metaphone;
 import org.springframework.core.io.ClassPathResource;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MonolithStarterApp implements InitializingBean {
@@ -282,5 +286,16 @@ public class MonolithStarterApp implements InitializingBean {
             }
         }
         return false;
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/records").allowedOrigins("http://localhost:8080");
+                registry.addMapping("/api/duplicates").allowedOrigins("http://localhost:8080");
+            }
+        };
     }
 }
