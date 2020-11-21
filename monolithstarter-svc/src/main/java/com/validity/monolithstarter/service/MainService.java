@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MainService {
-
+//returns the records in json format
     public String getRecords()
     {
         return RecordStorage.recStore.recordJson();
     }
-
+//returns duplicates in json format
     public String getDuplicates()
     {
         return RecordStorage.recStore.duplicateJson();

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import {getRecords} from "../actions/homeActions";
 import {getDuplicates} from "../actions/homeActions";
-
+//table formatting
 const style  =
   `
     table,th,td
@@ -18,14 +18,14 @@ const style  =
 class HomePage extends Component {
   constructor(props){
     super(props);
-    this.state = {
+    this.state = { //make arrays for records and duplicates
       records : [],
       duplicates : []
     };
   }
 
   componentDidMount(){
-
+//get the records & duplicates from the api
     getRecords().then(records => {
       this.setState({records});
     });
@@ -40,7 +40,7 @@ class HomePage extends Component {
     const{records, duplicates} = this.state;
     console.log(records);
     console.log(duplicates);
-
+//display the records & duplicates in table form
     return (
       <div className="App">
         <style>{style}</style>

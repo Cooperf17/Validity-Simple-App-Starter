@@ -46,6 +46,8 @@ public class MainController {
             return "main";
         }
     }
+
+    //returns records without duplicates
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/records")
     public String records()
@@ -53,6 +55,7 @@ public class MainController {
         return mainService.getRecords();
     }
 
+    //returns duplicates
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/duplicates")
     public String duplicates()

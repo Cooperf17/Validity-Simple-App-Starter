@@ -124,7 +124,7 @@ public class MonolithStarterApp implements InitializingBean {
             while ((oneLine = buffReader.readLine()) != null)
             {
                 //split the line
-                String[] tokens = oneLine.split(",");
+                String[] tokens = oneLine.split(","); //TODO: change this to ignore splits with " in company names
                 Record record = null;
                 boolean addToSet = false;
                 if(tokens.length >0)
@@ -138,8 +138,6 @@ public class MonolithStarterApp implements InitializingBean {
                     }
 
                     record = new Record(Integer.parseInt(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6], Integer.parseInt(tokens[7]), tokens[8], tokens[9], tokens[10], tokens[11]);
-
-                    System.out.println(record.getEmail());
 
                     //perform checks to see if that record is too similar to those in the set
                     if(!checkDuplicates(records, record))
@@ -155,12 +153,10 @@ public class MonolithStarterApp implements InitializingBean {
                 if(addToSet == true) //add does not add duplicates
                 {
                     records.add(record);
-                    System.out.println(oneLine);
                 }
                 else //add the duplicate to the duplicate HashSet
                     duplicates.add(record);
             }
-            System.out.println(records.size()); //TODO remove this
         } catch(FileNotFoundException e){
             e.printStackTrace();
         } catch(IOException e) {
@@ -288,6 +284,7 @@ public class MonolithStarterApp implements InitializingBean {
         return false;
     }
 
+    //added to get around Cors issues
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
